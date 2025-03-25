@@ -32,7 +32,7 @@ jobs:
         
     - name: Upload test report
       if: always()
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: pytest-report
         path: |
@@ -47,3 +47,4 @@ jobs:
         else
           echo "Test report generation failed"
           exit 1 
+        fi 
