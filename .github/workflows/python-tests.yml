@@ -24,18 +24,26 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install pytest-html pytest-cov
         
-    - name: Run tests
+    - name: Run tests with coverage
       run: |
-        pytest test_calculator.py -v
+        pytest test_calculator.py -v --cov=calculator --cov-report=xml --html=pytest_report.html --self-contained-html
         
-    - name: Generate test report
+    - name: Upload test report
       if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: pytest-report
+        path: |
+          pytest_report.html
+          coverage.xml
+        
+    - name: Check test results
       run: |
         echo "Test run completed at $(date)"
-        echo "Test results:"
-        if [ $? -eq 0 ]; then
-          echo "All tests passed!"
+        if [ -f pytest_report.html ]; then
+          echo "Test report generated successfully"
         else
-          echo "Some tests failed"
+          echo "Test report generation failed"
           exit 1 
