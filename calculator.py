@@ -1,3 +1,7 @@
+"""
+Calculator module with basic arithmetic operations.
+"""
+
 def add(a, b):
     """Add two numbers and return the result."""
     return a + b
@@ -14,4 +18,4 @@ def divide(a, b):
     """Divide a by b and return the result. Raises ZeroDivisionError if b is 0."""
     if b == 0:
         raise ZeroDivisionError("Cannot divide by zero")
-    return a / b 
+    return a / b

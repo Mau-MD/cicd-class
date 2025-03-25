@@ -1,3 +1,8 @@
+"""
+Test module for calculator.py.
+Contains unit tests for the add, subtract, multiply, and divide functions.
+Tests basic functionality and edge cases like division by zero.
+"""
 import pytest
 from calculator import add, subtract, multiply, divide
 

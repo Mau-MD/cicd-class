@@ -24,18 +24,57 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install pytest-html pytest-cov
         
-    - name: Run tests
+    - name: Run tests with coverage
       run: |
-        pytest test_calculator.py -v
+        pytest test_calculator.py -v --cov=calculator --cov-report=xml --html=pytest_report.html --self-contained-html
         
-    - name: Generate test report
+    - name: Upload test report
       if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: pytest-report
+        path: |
+          pytest_report.html
+          coverage.xml
+        
+    - name: Check test results
       run: |
         echo "Test run completed at $(date)"
-        echo "Test results:"
-        if [ $? -eq 0 ]; then
-          echo "All tests passed!"
+        if [ -f pytest_report.html ]; then
+          echo "Test report generated successfully"
         else
-          echo "Some tests failed"
+          echo "Test report generation failed"
           exit 1 
+        fi 
+  lint:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        pip install pylint
+
+    - name: Run pylint
+      run: |
+        pylint calculator.py > pylint_report.txt
+        pylint calculator.py 
+
+    - name: Upload pylint report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: pylint-report
+        path: pylint_report.txt
